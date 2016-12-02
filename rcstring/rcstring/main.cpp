@@ -21,7 +21,10 @@ int main()
 	cout << d << endl; //aulb15
 	d[2] = d[1] = d[0];
 	cout << d << endl; //aaab15 */
+	const char *text("!10domow2ulice+3");
+	int a=myAtoi(text);
+	cout << a;
 
-	atoi("12domow3+2");
+
 	return 0;
 }
