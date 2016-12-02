@@ -6,6 +6,42 @@
 #include <iostream>
 using namespace std;
 
+void myAtoi(const char* string);
+bool isNumber(char);
+bool isSign(char, bool);
+
+
+void myAtoi(const char *string) {
+
+	int lengthOfString = strlen(string);
+	char *tmpString;
+	char currentChar;
+	tmpString = (char*)malloc((lengthOfString + 1) * sizeof(char));
+	for (int i = 0; i < lengthOfString; i++) {
+		*(tmpString + i) = *(string + i);
+		currentChar = *(tmpString + i);
+		if (isNumber(currentChar)) { cout << currentChar << " "; }
+		if (isSign(currentChar, isNumber(*(string + i + 1)))) { }
+		else { cout << ""; }
+	}
+}
+
+
+bool isNumber(char currentChar) {
+	if ((int)currentChar >= 48 && (int)currentChar <= 57) {
+		return true;
+	}
+	else { return false; }
+}
+
+
+bool isSign(char currentChar, bool nextCharisNumber) {
+	if (((int)currentChar == 43 || (int)currentChar == 45) && nextCharisNumber) {
+		if((int)currentChar == 45) { cout << "-"; }
+		return true;
+	}
+	else { return false; }
+}
 class rcstring {
 	struct rctext;
 	rctext* data;
@@ -23,10 +59,10 @@ public:
 	void check(unsigned int i) const;
 	char read(unsigned int i) const;
 	void write(unsigned int i, char c);
-
 	char operator[](unsigned int i) const;
 	char& operator[](unsigned int i);
 };
+
 
 struct rcstring::rctext
 {
