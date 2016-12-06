@@ -29,6 +29,7 @@ public:
 	Cref operator[](unsigned int i);
 	int myAtoi();
 	rcstring& tooLower();
+	rcstring left(int);
 };
 
 struct rcstring::rctext
@@ -97,6 +98,17 @@ rcstring& rcstring::tooLower()
 			data->s[i] += 'a' - 'A';
 	}
 	return *this;
+}
+
+inline
+rcstring rcstring::left(int n)
+{
+	char * y = new char[n + 1];
+	strncpy(y, data->s, n);
+	y[n] = '\0';
+	rcstring x(y);
+	delete[] y;
+	return x;
 }
 
 class rcstring::Cref

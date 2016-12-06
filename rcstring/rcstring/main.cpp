@@ -27,11 +27,10 @@ int main()
 	cout << "\n" << "input string: " << e << endl;
 	cout<< "\natoi: " << a.myAtoi() << endl;
 
-	cout << "toLower: " <<e.tooLower() << endl;
+	cout << "toLower: " << e.tooLower() << endl;
 
-
+	cout << "left: " << e.left(4) << endl;
 	system("PAUSE");
 
 	return 0;
 }
-//http://wklej.to/dovxf
