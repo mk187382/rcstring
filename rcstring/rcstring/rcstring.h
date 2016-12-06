@@ -28,6 +28,7 @@ public:
 	char operator[](unsigned int i) const;
 	Cref operator[](unsigned int i);
 	int myAtoi();
+	rcstring& tooLower();
 };
 
 struct rcstring::rctext
@@ -84,6 +85,18 @@ int rcstring::myAtoi()
 		if (data->s[i] >= '0' || data->s[i] <= '9') x = atoi(data->s);
 
 	return x;//=atoi(data->s);
+}
+
+inline
+rcstring& rcstring::tooLower()
+{
+	data = data->detach();
+	for (unsigned int i = 0; i<data->size; i++)
+	{
+		if (data->s[i] >= 'A'&&data->s[i] <= 'Z')
+			data->s[i] += 'a' - 'A';
+	}
+	return *this;
 }
 
 class rcstring::Cref

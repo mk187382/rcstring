@@ -3,7 +3,7 @@
 int main()
 {
 	rcstring a, b, c;
-	a = "10";
+	a = "10xyz";
 	b = "ala ma kota";
 	cout << a << " " << b << endl; // 10 ala ma ma kota
 	c = a + b;
@@ -24,9 +24,10 @@ int main()
 	cout << d << endl; //aaab15 
 	rcstring e;
 	e = "RoZnE Z9NaKi";
-	cout << a.myAtoi() << endl;
-	// a jest rcstringiem zawieraj¹cym 10, wystarczy go podpi¹c pod atooi() i 
-	// wydrukuje przetworzonego stringa do inta
+	cout << "\n" << "input string: " << e << endl;
+	cout<< "\natoi: " << a.myAtoi() << endl;
+
+	cout << "toLower: " <<e.tooLower() << endl;
 
 
 	system("PAUSE");
