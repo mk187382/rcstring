@@ -2,51 +2,17 @@
 #define __RCSTRING_H__
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <malloc.h>
 #include <iostream>
+#include <ctype.h>
 using namespace std;
 
-void myAtoi(const char* string);
-bool isNumber(char);
-bool isSign(char, bool);
-
-
-void myAtoi(const char *string) {
-
-	int lengthOfString = strlen(string);
-	char *tmpString;
-	char currentChar;
-	tmpString = (char*)malloc((lengthOfString + 1) * sizeof(char));
-	for (int i = 0; i < lengthOfString; i++) {
-		*(tmpString + i) = *(string + i);
-		currentChar = *(tmpString + i);
-		if (isNumber(currentChar)) { cout << currentChar << " "; }
-		if (isSign(currentChar, isNumber(*(string + i + 1)))) { }
-		else { cout << ""; }
-	}
-}
-
-
-bool isNumber(char currentChar) {
-	if ((int)currentChar >= 48 && (int)currentChar <= 57) {
-		return true;
-	}
-	else { return false; }
-}
-
-
-bool isSign(char currentChar, bool nextCharisNumber) {
-	if (((int)currentChar == 43 || (int)currentChar == 45) && nextCharisNumber) {
-		if((int)currentChar == 45) { cout << "-"; }
-		return true;
-	}
-	else { return false; }
-}
 class rcstring {
 	struct rctext;
 	rctext* data;
 public:
-	class Range {};
+	class Cref;
 	rcstring();
 	rcstring(const char*);
 	rcstring(const rcstring&);
@@ -60,9 +26,9 @@ public:
 	char read(unsigned int i) const;
 	void write(unsigned int i, char c);
 	char operator[](unsigned int i) const;
-	char& operator[](unsigned int i);
+	Cref operator[](unsigned int i);
+	int myAtoi();
 };
-
 
 struct rcstring::rctext
 {
@@ -109,6 +75,40 @@ private:
 	rctext& operator=(const rctext&);
 };
 
+inline
+int rcstring::myAtoi()
+{
+	int x = 0;
+
+	for (unsigned int i = 0; i<data->size; i++)
+		if (data->s[i] >= '0' || data->s[i] <= '9') x = atoi(data->s);
+
+	return x;//=atoi(data->s);
+}
+
+class rcstring::Cref
+{
+	friend class rcstring;
+	rcstring& s;
+	int i;
+	Cref(rcstring& ss, unsigned int ii) : s(ss), i(ii) {};
+public:
+	operator char() const
+	{
+		cout << "operator char() const" << endl;
+		return s.read(i);
+	}
+	rcstring::Cref& operator = (char c)
+	{
+		cout << "void operator = (char c)" << endl;
+		s.write(i, c);
+		return *this;
+	}
+	rcstring::Cref& operator = (const Cref& ref)
+	{
+		return operator= ((char)ref);
+	}
+};
 inline rcstring::rcstring()
 {
 	data = new rctext(0, "");
@@ -124,7 +124,7 @@ inline rcstring::~rcstring()
 	if (--data->n == 0)
 		delete data;
 }
-
+inline
 rcstring& rcstring::operator=(const rcstring & x)
 {
 	x.data->n++;
@@ -133,12 +133,13 @@ rcstring& rcstring::operator=(const rcstring & x)
 	data = x.data;
 	return *this;
 }
-
+inline
 rcstring::rcstring(const char* s)
 {
 	data = new rctext(strlen(s), s);
 }
 
+inline
 rcstring& rcstring::operator=(const char* s)
 {
 	if (data->n == 1)
@@ -151,12 +152,12 @@ rcstring& rcstring::operator=(const char* s)
 	};
 	return *this;
 }
-
+inline
 ostream& operator << (ostream& o, const rcstring& s)
 {
 	return o << s.data->s;
 }
-
+inline
 rcstring& rcstring::operator+=(const rcstring & s)
 {
 	unsigned int newsize = data->size + s.data->size;
@@ -167,7 +168,7 @@ rcstring& rcstring::operator+=(const rcstring & s)
 	data = newdata;
 	return *this;
 }
-
+inline
 rcstring rcstring::operator+(const rcstring & s) const
 {
 	return rcstring(*this) += s;
@@ -176,33 +177,32 @@ rcstring rcstring::operator+(const rcstring & s) const
 inline void rcstring::check(unsigned int i) const
 {
 	if (data->size <= i)
-		throw Range();
+		throw std::out_of_range("out of range");
 }
-
 inline char rcstring::read(unsigned int i) const
 {
 	return data->s[i];
 }
-
 inline void rcstring::write(unsigned int i, char c)
 {
 	data = data->detach();
 	data->s[i] = c;
 }
-
+inline
 char rcstring::operator[](unsigned int i) const
 {
 	cout << "char rcstring::operator[](unsigned int i) const" << endl;
 	check(i);
 	return data->s[i];
 }
-
-char& rcstring::operator[](unsigned int i)
+inline
+rcstring::Cref rcstring::operator[](unsigned int i)
 {
-	cout << "char& rcstring::operator[](unsigned int i)" << endl;
+	cout << "Cref rcstring::operator[](unsigned int i)" << endl;
 	check(i);
-	data = data->detach();
-	return data->s[i];
+	return Cref(*this, i);
 }
+
+
 
 #endif /* __RCSTRING_H__ */
